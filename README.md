@@ -1,2 +1,2 @@
 # tours
-Website for choosing and buying tours for traveling
+Website for choosing and buying traveling tours
