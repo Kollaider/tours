@@ -21,21 +21,15 @@ def custom_handler500(request):
 class MainView(View):
 
     def get(self, request):
-        tours_for_main_page = []
-        some_list = random.sample(list(tours), 6)
-        for i in range(len(some_list)):
-            tours[some_list[i]]['trancated_text'] = tours[some_list[i]]['description'][:90]+'...'
-            tours_for_main_page.append(tours[some_list[i]])
+        numbers_of_tours = 6
+        random_tours = random.sample(list(tours.items()), numbers_of_tours)
 
-        context = {'tours_for_main_page': tours_for_main_page,
-                   'title': title,
-                   'subtitle': subtitle,
-                   'description': description,
-                   'departures': departures,
-                   'picture': picture
-                   }
-        print(os.path)
-        return render(request, 'index.html', context=context)
+        return render(request, 'index.html', {'title': title,
+                                                      'subtitle': subtitle,
+                                                      'description': description,
+                                                      'random_tours': random_tours,
+                                                      'departures': departures,
+                                                      'picture': picture})
 
 
 class DepartureView(View):
@@ -51,24 +45,25 @@ class DepartureView(View):
 
         departure_title['from'] = departures[departure]
 
-        list_of_tours = []
+        tours_filtered = []
         for key, value in tours.items():
             if value['departure'] == departure:
-                list_of_tours.append(value)
+                value['tour_id'] = key
+                tours_filtered.append(value)
                 list_of_nights.append(value['nights'])
                 list_of_pricies.append(value['price'])
 
-        amount = len(list_of_tours)
+        amount = len(tours_filtered)
 
-        if amount%10 in (2,3,4) and amount not in (12, 13, 14):
+        if amount % 10 in (2,3,4) and amount not in (12, 13, 14):
             suffix = 'а'
-        elif amount%10 == 1 and amount != 11:
+        elif amount % 10 == 1 and amount != 11:
             suffix = ''
         else:
             suffix = 'ов'
 
 
-        return render(request, 'departure.html', context={'list_of_tours': list_of_tours,
+        return render(request, 'departure.html', context={'tours_filtered': tours_filtered,
                                                           'departures': departures,
                                                           'departure_from': departure_from,
                                                           'departure_title': departure_title,
@@ -84,5 +79,7 @@ class TourView(View):
 
     def get(self, request, id):
         tours[id]['stars_in_symb'] = int(tours[id]['stars'])*'★'
-        context = tours[id]
-        return render(request, 'tour.html', context=context)
+
+
+        return render(request, 'tour.html', context={'tour': tours[id],
+                                                     'departures': departures})
