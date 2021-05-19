@@ -1,3 +1,20 @@
 [flake8]
+## Common settings:
+exclude =
+    venv/,
+    .*/
+
+statistics = True
 max-line-length = 120
-exclude = .git,__pycache__,venv
+
+## flake8-import-order
+import-order-style = google
+
+## flake8-quotes
+inline-quotes = single
+multiline-quotes = double
+
+ignore =
+    ### flake8-docstrings
+    # Missing docstrings
+    D1,
